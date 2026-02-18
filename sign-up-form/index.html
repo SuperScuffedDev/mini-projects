@@ -9,7 +9,7 @@
 <body>
     <div>
         <div id="logo-banner">
-            <svg class="logo" width="200" height="200"viewbox="0 0 100 100">
+            <svg class="logo" width="150" height="150"viewbox="0 0 100 100">
                 <circle
                     cx="50"
                     cy="50"
@@ -64,15 +64,48 @@
             <h1 class="logo">WTF</h1>
         </div>
     </div>
-    <div>
+    <div id="right">
         <div>
-            <p>This is the end. join now.</p>
+            <p><strong>This is the end. join now.</strong></p>
         </div>
-        <div>
+        <div id="form-div">
             <h2>Sign up or else</h2>
+            <form id="information" action="" method="post">
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="first-name">First Name</label>
+                        <input id="first-name" type="text" placeholder="John" required>
+                    </div>
+                    <div class="form-col">
+                        <label for="last-name">Last Name</label>
+                        <input id="last-name" type="text" placeholder="Doe" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="email">email</label>
+                        <input id="email" type="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-col">
+                        <label for="tel">Phone Number</label>
+                        <input id="tel" type="tel" maxlength="10" placeholder="0000000000" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" maxlength="20" required>
+                    </div>
+                    <div class="form-col">
+                        <label for="password-confirm">Confirm Password</label>
+                        <input id="password-confirm" type="password" maxlength="20" required>
+                    </div>
+                </div>
+            </form>
         </div>
         <div>
-
+            <button form="information" type="submit">Create Account</button>
+            <p>Already have an account? <strong><a href="./login.html">Log In</a></strong></p>
         </div>
     </div>
 </body>
