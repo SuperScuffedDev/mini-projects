@@ -1,0 +1,46 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 10vh;
+
+    background-color: rgb(0, 123, 154);
+}
+
+header h1 {
+    font-size: 8cqh;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    flex-direction: column;
+
+    width: 100vw;
+    height: 90vh;
+}
+
+main > div {
+    width: 100%;
+}
+
+main > div:first-child {
+    height: 20%;
+}
+
+#library-display {
+    height: 80%;
+    padding-inline: 10vw;
+}
