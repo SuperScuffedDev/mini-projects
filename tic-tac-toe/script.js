@@ -1,15 +1,18 @@
 const marker_cells = document.querySelectorAll("#gameboard > div");
 const new_game = document.querySelector("#new-game");
 const log = document.querySelector("#log");
+const score = document.querySelector("#score");
 
 const scoreHandler = (() => {
     let _x_score = 0;
-    let _y_score = 0;
+    let _o_score = 0;
 
     const addXScore = () => _x_score++;
-    const addYScore = () => _y_score++;
 
-    return (addXScore, addYScore)
+    const addOScore = () => _o_score++;
+
+    const getScoreData = () => `X: ${_x_score} | O: ${_o_score}`;
+    return {addXScore, addOScore, getScoreData}
 })();
 
 function createGame() {
@@ -85,6 +88,8 @@ function createGame() {
         [0, 0, 0],
     ];
 
+    const getInputState = () => _lock_input;
+
     const getGameboardState = () => _gameboard;
 
     const checkWinState = () => {
@@ -119,14 +124,9 @@ function createGame() {
         if (_gameboard[y][x] === 0) {
             _gameboard[y][x] = gameController.getThisPlayer();
             gameController.setMarker(x, y);
-
             gameController.incrementMoveCounter();
-            if (gameController.getMoveCounter() === 9) {
-                gameOver({type: "tie"});
-                return
-            };
         } else {
-            return "That's not an empty square"
+            return "That's not an empty square";
         };
 
         const win_state = checkWinState();
@@ -137,41 +137,97 @@ function createGame() {
             return
         };
 
+        if (gameController.getMoveCounter() === 9) {
+            gameOver({type: "tie"});
+            return;
+        };
+
         gameController.changeThisPlayer();
+    };
+
+    const highlightWin = (win_state) => {
+        if (win_state.type === "row") {
+            marker_cells.forEach(cell => {
+                if (Number(cell.getAttribute("data-y")) === win_state.index) {
+                    cell.style.backgroundColor = "rgb(20, 100, 0)"
+                };
+            });
+        } else if (win_state.type === "col") {
+            marker_cells.forEach(cell => {
+                if (Number(cell.getAttribute("data-x")) === win_state.index) {
+                    cell.style.backgroundColor = "rgb(20, 100, 0)"
+                };
+            });
+        } else if (win_state.type === "dia") {
+            marker_cells.forEach(cell => {
+                if (win_state.index === 0) {
+                    const included_cells = [[0, 0], [1, 1], [2, 2]];
+                    const this_cell = [Number(cell.getAttribute("data-x")), Number(cell.getAttribute("data-y"))];
+
+                    if (included_cells.some(([x, y]) => x === this_cell[0] && y === this_cell[1])) {
+                        console.log(this_cell)
+                        cell.style.backgroundColor = "rgb(20, 100, 0)"
+                    };
+                } else if (win_state.index === 1) {
+                    const included_cells = [[2, 0], [1, 1], [0, 2]];
+                    const this_cell = [Number(cell.getAttribute("data-x")), Number(cell.getAttribute("data-y"))];
+
+                    if (included_cells.some(([x, y]) => x === this_cell[0] && y === this_cell[1])) {
+                        console.log(this_cell)
+                        cell.style.backgroundColor = "rgb(20, 100, 0)"
+                    };
+                };
+            });
+        };
     };
 
     const gameOver = (win_state) => {
         _lock_input = true;
+
+        score.textContent = scoreHandler.getScoreData();
         if (win_state.type === "tie") {
-            log.textContent = "It's a Tie!";
-        } else if (win_state.type === "row") {
-            log.textContent = `${gameController.getThisPlayer() === 1 ? "X" : "O"} Wins`
-        } else if (win_state.type === "col") {
-            log.textContent = `${gameController.getThisPlayer() === 1 ? "X" : "O"} Wins`
-        } else if (win_state.type === "dia") {
-            log.textContent = `${gameController.getThisPlayer() === 1 ? "X" : "O"} Wins`
+            log.textContent = "It's a CAT!";
+            return
         };
+        log.textContent = `${gameController.getThisPlayer() === 1 ? "X" : "O"} Wins!`
+        highlightWin(win_state)
+        
+        console.log(gameController.getThisPlayer())
+        switch (gameController.getThisPlayer()) {
+            case 1:
+                scoreHandler.addXScore();
+                break;
+            case 2:
+                scoreHandler.addOScore();
+                break;
+        };
+
+        score.textContent = `Score -  ${scoreHandler.getScoreData()}`;
     };
 
-    const clickHandler = (event) => {
-        if (_lock_input) {return "input locked"}
-        if (event.target.getAttribute("class") !== "cell") {return}
-        const x = event.target.getAttribute("data-x")
-        const y = event.target.getAttribute("data-y")
-        addMarker(x, y)
-    };
-
-    marker_cells.forEach(cell => {
-        cell.addEventListener("click", clickHandler)
-    });
-
-    return {getGameboardState, checkWinState, addMarker, gameOver}
+    return {getInputState, getGameboardState, checkWinState, addMarker, gameOver}
 };
 
 let ttt_game = createGame();
 
+const clickHandler = (event) => {
+        if (ttt_game.getInputState()) {return "input locked"}
+        if (event.target.getAttribute("class") !== "cell") {return}
+        const x = event.target.getAttribute("data-x")
+        const y = event.target.getAttribute("data-y")
+        ttt_game.addMarker(x, y)
+    };
+
+marker_cells.forEach(cell => {
+    cell.removeEventListener("click", clickHandler);
+    cell.addEventListener("click", clickHandler)
+});
+
 new_game.addEventListener("click", (event) => {
-    marker_cells.forEach(cell => cell.innerHTML = "")
+    marker_cells.forEach(cell => {
+        cell.innerHTML = "";
+        cell.style.removeProperty("background-color");
+    });
     log.textContent = "X's Turn";
     ttt_game = createGame();
 });
