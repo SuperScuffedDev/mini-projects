@@ -8,26 +8,45 @@ function createGame() {
     const getGameboardState = () => _gameboard;
 
     const checkWinState = () => {
-        let win_state_found = false;
-        const _gameboard_col = [];
-        const _gameboard_dia = [];
+        const dia_map = [];
 
-        _gameboard_dia.push(_gameboard.map((row, i) => row[i]));
-        _gameboard_dia.push(_gameboard.map((row, i) => row[row.length - 1 - i]));
+        dia_map.push(_gameboard.map((row, i) => row[i]));
+        dia_map.push(_gameboard.map((row, i) => row[row.length - 1 - i]));
 
         for (let i=0; i<_gameboard[0].length; i++) {
-            _gameboard_col.push(_gameboard.map(row => row[i]));
+            const notValidRow = _gameboard[i].some(value => value === 0 || value !== _gameboard[i][0]);
+
+            const col_map = _gameboard.map(row => row[i])
+            const notValidCol = col_map.some(value => value === 0 || value !== col_map[0]);
+            
+            if (!notValidRow) {
+                return {type: "row", index: i};
+            } else if (!notValidCol) {
+                return {type: "col", index: i};
+            };
         };
 
-        return {_gameboard_col, _gameboard_dia};
+        for (let i=0; i<2; i++) {
+            const notValidDia = dia_map[i].some(value => value === 0 || value !== dia_map[i][0]);
+
+            if (!notValidDia) {
+                return {type: "dia", index: i};
+            };
+        };
     };
 
     const addMarker = (player, x, y) => {
-        console.log("addMarker")
         if (_gameboard[y][x] === 0) {
             _gameboard[y][x] = player;
         } else {
             console.log("That's not an empty square")
+        };
+
+        getGameboardState();
+        const win_state = checkWinState();
+
+        if (typeof win_state === "object") {
+            console.log("win state found")
         };
     };
 
