@@ -1,20 +1,71 @@
-const gameController = (() => {
-    let _this_player = 1;
-
-    const getThisPlayer = () => _this_player;
-
-    const changeThisPlayer = () => {
-        if (_this_player === 1) {
-            _this_player = 2;
-        } else if (_this_player === 2) {
-            _this_player = 1;
-        };
-    };
-
-    return {getThisPlayer, changeThisPlayer}
-})();
+const marker_cells = document.querySelectorAll("#gameboard > div")
+const new_game = document.querySelector("#new-game")
 
 function createGame() {
+    const gameController = (() => {
+        let _move_counter = 0;
+        let _this_player = 1;
+
+        const getThisPlayer = () => _this_player;
+
+        const getMoveCounter = () => _move_counter;
+
+        const incrementMoveCounter = () => {_move_counter++};
+
+        const resetMoveCounter = () => {_move_counter = 0};
+
+        const changeThisPlayer = () => {
+            if (_this_player === 1) {
+                _this_player = 2;
+            } else if (_this_player === 2) {
+                _this_player = 1;
+            };
+        };
+
+        const setMarker = (x, y) => {
+            let this_cell = undefined;
+            marker_cells.forEach(cell => {
+                if (cell.getAttribute("data-x") === x && cell.getAttribute("data-y") === y) {
+                    this_cell = cell;
+                };
+            });
+            if (_this_player === 1) {
+                const svgNS = "http://www.w3.org/2000/svg";
+                const new_marker = document.createElementNS(svgNS, "svg");
+                new_marker.setAttribute("class", "marker x");
+                new_marker.setAttribute("viewBox", "0 0 100 100");
+
+                const new_shape = document.createElementNS(svgNS, "polygon");
+                new_shape.setAttribute("points", "25 15 15 25 40 50 15 75 25 85 50 60 75 85 85 75 60 50 85 25 75 15 50 40");
+                new_shape.setAttribute("stroke", "red");
+                new_shape.setAttribute("stroke-width", "5")
+                
+                new_marker.appendChild(new_shape);
+                this_cell.appendChild(new_marker);
+            } else if (_this_player === 2) {
+                const svgNS = "http://www.w3.org/2000/svg"
+                const new_marker = document.createElementNS(svgNS, "svg");
+                new_marker.setAttribute("class", "marker o");
+                new_marker.setAttribute("viewBox", "0 0 100 100");
+
+                const new_shape = document.createElementNS(svgNS, "circle");
+                new_shape.setAttribute("cx", "50");
+                new_shape.setAttribute("cy", "50");
+                new_shape.setAttribute("r", "35");
+                new_shape.setAttribute("fill", "black");
+                new_shape.setAttribute("stroke", "#00ff22");
+                new_shape.setAttribute("stroke-width", "5");
+
+                new_marker.appendChild(new_shape);
+                this_cell.appendChild(new_marker);
+            };
+        };
+
+        return {getThisPlayer, getMoveCounter, incrementMoveCounter, resetMoveCounter, changeThisPlayer, setMarker};
+    })();
+
+    let _lock_input = false;
+
     const _gameboard = [
         [0, 0, 0],
         [0, 0, 0],
@@ -22,10 +73,6 @@ function createGame() {
     ];
 
     const getGameboardState = () => _gameboard;
-    
-    const setInitialGamboardState = () => {
-        _gameboard.forEach(row => row.fill(0));
-    };
 
     const checkWinState = () => {
         const dia_map = [];
@@ -56,9 +103,15 @@ function createGame() {
     };
 
     const addMarker = (x, y) => {
-        
         if (_gameboard[y][x] === 0) {
             _gameboard[y][x] = gameController.getThisPlayer();
+            gameController.setMarker(x, y);
+
+            gameController.incrementMoveCounter();
+            if (gameController.getMoveCounter() === 9) {
+                _lock_input = true;
+                console.log("aaa")
+            };
         } else {
             return "That's not an empty square"
         };
@@ -66,13 +119,35 @@ function createGame() {
         const win_state = checkWinState();
         
         if (typeof win_state === "object") {
-            console.log("win state found")
+            console.log("win state found");
+            gameOver(win_state);
         };
 
         gameController.changeThisPlayer();
     };
 
-    return {getGameboardState, setInitialGamboardState, checkWinState, addMarker}
+    const gameOver = (win_state) => {
+        _lock_input = true;
+    };
+
+    const clickHandler = (event) => {
+        if (_lock_input) {return "input locked"}
+        if (event.target.getAttribute("class") !== "cell") {return}
+        const x = event.target.getAttribute("data-x")
+        const y = event.target.getAttribute("data-y")
+        addMarker(x, y)
+    };
+
+    marker_cells.forEach(cell => {
+        cell.addEventListener("click", clickHandler)
+    });
+
+    return {getGameboardState, checkWinState, addMarker, gameOver}
 };
 
 const ttt_game = createGame();
+
+new_game.addEventListener("click", (event) => {
+    marker_cells.forEach(cell => cell.innerHTML = "")
+    ttt_game = createGame();
+});
