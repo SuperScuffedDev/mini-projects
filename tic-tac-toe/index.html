@@ -9,7 +9,7 @@
 <body>
     <div>
         <h1>Tic Tac Toe</h1>
-        <p>X Turn</p>
+        <p id="log">X's Turn</p>
     </div>
     <div id="gameboard">
         <div data-x="0" data-y="0" class="cell"></div>
@@ -22,7 +22,8 @@
         <div data-x="1" data-y="2" class="cell"></div>
         <div data-x="2" data-y="2" class="cell"></div>
     </div>
-    <div>
+    <div id="button-container">
+        <p id="score">Score: </p>
         <button id="new-game">New Game</button>
     </div>
     <script src="./script.js"></script>

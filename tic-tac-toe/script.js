@@ -1,5 +1,16 @@
-const marker_cells = document.querySelectorAll("#gameboard > div")
-const new_game = document.querySelector("#new-game")
+const marker_cells = document.querySelectorAll("#gameboard > div");
+const new_game = document.querySelector("#new-game");
+const log = document.querySelector("#log");
+
+const scoreHandler = (() => {
+    let _x_score = 0;
+    let _y_score = 0;
+
+    const addXScore = () => _x_score++;
+    const addYScore = () => _y_score++;
+
+    return (addXScore, addYScore)
+})();
 
 function createGame() {
     const gameController = (() => {
@@ -10,15 +21,17 @@ function createGame() {
 
         const getMoveCounter = () => _move_counter;
 
-        const incrementMoveCounter = () => {_move_counter++};
+        const incrementMoveCounter = () => _move_counter++;
 
         const resetMoveCounter = () => {_move_counter = 0};
 
         const changeThisPlayer = () => {
             if (_this_player === 1) {
                 _this_player = 2;
+                log.textContent = "O's Turn";
             } else if (_this_player === 2) {
                 _this_player = 1;
+                log.textContent = "X's Turn";
             };
         };
 
@@ -109,8 +122,8 @@ function createGame() {
 
             gameController.incrementMoveCounter();
             if (gameController.getMoveCounter() === 9) {
-                _lock_input = true;
-                console.log("aaa")
+                gameOver({type: "tie"});
+                return
             };
         } else {
             return "That's not an empty square"
@@ -121,6 +134,7 @@ function createGame() {
         if (typeof win_state === "object") {
             console.log("win state found");
             gameOver(win_state);
+            return
         };
 
         gameController.changeThisPlayer();
@@ -128,6 +142,15 @@ function createGame() {
 
     const gameOver = (win_state) => {
         _lock_input = true;
+        if (win_state.type === "tie") {
+            log.textContent = "It's a Tie!";
+        } else if (win_state.type === "row") {
+            log.textContent = `${gameController.getThisPlayer() === 1 ? "X" : "O"} Wins`
+        } else if (win_state.type === "col") {
+            log.textContent = `${gameController.getThisPlayer() === 1 ? "X" : "O"} Wins`
+        } else if (win_state.type === "dia") {
+            log.textContent = `${gameController.getThisPlayer() === 1 ? "X" : "O"} Wins`
+        };
     };
 
     const clickHandler = (event) => {
@@ -145,9 +168,10 @@ function createGame() {
     return {getGameboardState, checkWinState, addMarker, gameOver}
 };
 
-const ttt_game = createGame();
+let ttt_game = createGame();
 
 new_game.addEventListener("click", (event) => {
     marker_cells.forEach(cell => cell.innerHTML = "")
+    log.textContent = "X's Turn";
     ttt_game = createGame();
 });
