@@ -1,3 +1,19 @@
+const gameController = (() => {
+    let _this_player = 1;
+
+    const getThisPlayer = () => _this_player;
+
+    const changeThisPlayer = () => {
+        if (_this_player === 1) {
+            _this_player = 2;
+        } else if (_this_player === 2) {
+            _this_player = 1;
+        };
+    };
+
+    return {getThisPlayer, changeThisPlayer}
+})();
+
 function createGame() {
     const _gameboard = [
         [0, 0, 0],
@@ -39,18 +55,21 @@ function createGame() {
         };
     };
 
-    const addMarker = (player, x, y) => {
+    const addMarker = (x, y) => {
+        
         if (_gameboard[y][x] === 0) {
-            _gameboard[y][x] = player;
+            _gameboard[y][x] = gameController.getThisPlayer();
         } else {
-            console.log("That's not an empty square")
+            return "That's not an empty square"
         };
 
         const win_state = checkWinState();
-
+        
         if (typeof win_state === "object") {
             console.log("win state found")
         };
+
+        gameController.changeThisPlayer();
     };
 
     return {getGameboardState, setInitialGamboardState, checkWinState, addMarker}

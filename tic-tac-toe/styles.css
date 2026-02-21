@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body > div:nth-child(odd) {
+    width: 100vw;
+    height: 20vh;
+}
+
+#gameboard {
+    display: grid;
+    grid-template-rows: calc(100%/3) calc(100%/3) calc(100%/3);
+    grid-template-columns: calc(100%/3) calc(100%/3) calc(100%/3);
+    width: 60vh;
+    height: 60vh;
+    border: 1cqh, cyan, solid;
+}
+
+#gameboard > div {
+    background-color: rgb(0, 62, 62);
+    border: 0.5cqh, cyan, solid;
+}
+
+.marker {
+    width: 100%;
+    height: 100%;
+}
+
+#gameboard > div:hover {
+    background-color: rgb(0, 135, 135);
+}
