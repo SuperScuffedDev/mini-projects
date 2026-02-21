@@ -6,6 +6,10 @@ function createGame() {
     ];
 
     const getGameboardState = () => _gameboard;
+    
+    const setInitialGamboardState = () => {
+        _gameboard.forEach(row => row.fill(0));
+    };
 
     const checkWinState = () => {
         const dia_map = [];
@@ -42,7 +46,6 @@ function createGame() {
             console.log("That's not an empty square")
         };
 
-        getGameboardState();
         const win_state = checkWinState();
 
         if (typeof win_state === "object") {
@@ -50,7 +53,7 @@ function createGame() {
         };
     };
 
-    return {getGameboardState, checkWinState, addMarker}
+    return {getGameboardState, setInitialGamboardState, checkWinState, addMarker}
 };
 
 const ttt_game = createGame();
