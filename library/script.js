@@ -4,16 +4,31 @@ let buttons = document.querySelectorAll("button")
 
 const library = [];
 
-function Book(uuid, title, author, pages, has_read) {
-    if(!new.target) {
-        throw Error("contructor requires 'new'");
-    };
-    this.uuid = uuid
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.has_read = has_read;
-};
+class Book {
+    constructor(
+        uuid, 
+        title, 
+        author, 
+        pages, 
+        has_read
+    ) {
+        this.uuid = uuid  
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.has_read = has_read;
+    }
+
+    info() {
+        let read_status = this.has_read ? "has been read" : "not yet read";
+        return(`${this.title} by ${this.author}, ${this.pages} pages, ${read_status}`)
+    }
+
+    change_read_status() {
+        this.has_read = !this.has_read;
+        displayBooks();
+    }
+}
 
 function displayBooks() {
     library_display.innerHTML = '';
@@ -91,16 +106,6 @@ function removeBook(uuid) {
     library.splice(index, 1);
     displayBooks();
 }
-
-Book.prototype.info = function() {
-    let read_status = this.has_read ? "has been read" : "not yet read";
-    return(`${this.title} by ${this.author}, ${this.pages} pages, ${read_status}`)
-};
-
-Book.prototype.change_read_status = function() {
-    this.has_read = !this.has_read;
-    displayBooks();
-};
 
 form.addEventListener("submit", (event) => {
     event.preventDefault();
