@@ -1,0 +1,64 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+
+    background-image: url(./images/bigborger.png);
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+    width: 100vw;
+    height: 5vh;
+    background-color: skyblue;
+    margin-bottom: 16px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20%;
+
+    width: inherit;
+    padding: 8px;
+}
+
+nav > button {
+    aspect-ratio: 3/1;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 30vw;
+    padding: 1cqi;
+    background-color: rgba(122, 122, 122, 0.744);
+}
+
+#content > img {
+    width: 100%;
+}
+
+#content > h1 {
+    width: 50%;
+    font-size: 2rem;
+    text-align: center;
+}
+
+p, h2 {
+    text-align: center;
+}
